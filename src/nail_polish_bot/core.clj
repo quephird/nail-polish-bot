@@ -12,7 +12,7 @@
         bot-creds (apply oauth/make-oauth-creds env-vars)]
     ; TODO: Need to check env-vars to see that it actually has something
     (api/statuses-update :oauth-creds bot-creds
-                         :params {:status "Hiiiiii again Twitter!1!!"})))
+                         :params {:status "Hiiiiii a third time, Twitter!1!!"})))
 
 (defn render-image []
   (let [povray-bin  "povray"
