@@ -3,8 +3,7 @@
             [me.raynes.conch.low-level :as sh]
             [twitter.api.restful :as api]
             [twitter.oauth :as oauth]
-            [twitter.request :as req]
-            ))
+            [twitter.request :as req]))
 
 ; TODO: Figure out how to capture color, percentage full, and other
 ;       attributes of image and incorporate them into the status.
@@ -22,7 +21,8 @@
 (defn render-image []
   (let [povray-bin  "povray"
         povray-file "main.pov"
-        povray-args (format "-d +Lresources +I%s +Omain.png +W800 +H600" povray-file)
+        povray-includes-dir (env/env :povray-includes-dir)
+        povray-args (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600" povray-includes-dir povray-file)
         process     (sh/proc povray-bin povray-args)
         exit        (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning
