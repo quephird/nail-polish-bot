@@ -1,18 +1,21 @@
 (ns nail-polish-bot.core
-  (:require [me.raynes.conch.low-level :as sh]
-            [twitter.oauth :as oauth]
+  (:require [environ.core :as env]
+            [me.raynes.conch.low-level :as sh]
             [twitter.api.restful :as api]
-            [environ.core :as env]))
+            [twitter.oauth :as oauth]
+            [twitter.request :as req]
+            ))
 
-(defn post-status []
+(defn post-status [image-file-name]
   (let [env-vars  (map env/env [:app-consumer-key
                                 :app-consumer-secret
                                 :user-access-token
                                 :user-access-token-secret])
         bot-creds (apply oauth/make-oauth-creds env-vars)]
     ; TODO: Need to check env-vars to see that it actually has something
-    (api/statuses-update :oauth-creds bot-creds
-                         :params {:status "Hiiiiii a third time, Twitter!1!!"})))
+    (api/statuses-update-with-media :oauth-creds bot-creds
+                                    :body [(req/file-body-part image-file-name)
+                                           (req/status-body-part "My second image post!!!")])))
 
 (defn render-image []
   (let [povray-bin  "povray"
