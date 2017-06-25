@@ -6,6 +6,8 @@
             [twitter.request :as req]
             ))
 
+; TODO: Figure out how to capture color, percentage full, and other
+;       attributes of image and incorporate them into the status.
 (defn post-status [image-file-name]
   (let [env-vars  (map env/env [:app-consumer-key
                                 :app-consumer-secret
@@ -15,12 +17,12 @@
     ; TODO: Need to check env-vars to see that it actually has something
     (api/statuses-update-with-media :oauth-creds bot-creds
                                     :body [(req/file-body-part image-file-name)
-                                           (req/status-body-part "My second image post!!!")])))
+                                           (req/status-body-part "My first real nail polish image!!!")])))
 
 (defn render-image []
   (let [povray-bin  "povray"
-        povray-file "hello.pov"
-        povray-args (format "-d +I%s +Ohello.png +W800 +H600" povray-file)
+        povray-file "main.pov"
+        povray-args (format "-d +Lresources +I%s +Omain.png +W800 +H600" povray-file)
         process     (sh/proc povray-bin povray-args)
         exit        (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning
