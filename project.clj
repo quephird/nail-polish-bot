@@ -7,4 +7,5 @@
                  [me.raynes/conch "0.8.0"]
                  [twitter-api "1.8.0"]
                  [environ "1.1.0"]]
+  :min-lein-version "2.0.0"
   :main nail-polish-bot.core)
