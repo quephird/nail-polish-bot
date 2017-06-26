@@ -1,6 +1,8 @@
 (defproject nail-polish-bot "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "A silly little project that generates random scenes of
+                nail polish bottles using POV-Ray and posts them to
+                a special Twitter account"
+  :url "https://github.com/quephird/nail-polish-bot"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
