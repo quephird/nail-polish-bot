@@ -20,7 +20,7 @@
     ; TODO: Need to check env-vars to see that it actually has something
     (api/statuses-update-with-media :oauth-creds bot-creds
                                     :body [(req/file-body-part image-file-name)
-                                           (req/status-body-part "My first real nail polish image!!!")])))
+                                           (req/status-body-part "")])))
 
 (defn render-image []
   (let [povray-bin          "povray"
@@ -34,19 +34,23 @@
       (println "Uh oh, something happened")
       (println "💅 Yay! Image generated successfully 💅"))))
 
+; TODO: Need to generate file name and pass it into render-image and post-status
 (defjob PostNewImageJob
   [ctx]
-  (println "Posted a new image!!!"))
+  (render-image)
+  (post-status "main.png"))
 
 (defn -main [& args]
-  (let [scheduler (-> (scheduler/initialize) scheduler/start)
-        job (jobs/build
-              (jobs/of-type PostNewImageJob)
-              (jobs/with-identity (jobs/key "jobs.post-new-image")))
-        trigger (triggers/build
-                  (triggers/with-identity (triggers/key "triggers.post-new-image"))
-                  (triggers/start-now)
-                  (triggers/with-schedule
-                    (cron/schedule
-                      (cron/cron-schedule "0 * * * * ?"))))]
+  (let [EVERY-HOUR "0 0 * * * ?"
+        scheduler  (-> (scheduler/initialize) scheduler/start)
+        job        (jobs/build
+                     (jobs/of-type PostNewImageJob)
+                     (jobs/with-identity (jobs/key "jobs.post-new-image")))
+        trigger    (triggers/build
+                     (triggers/with-identity
+                       (triggers/key "triggers.post-new-image"))
+                     (triggers/start-now)
+                     (triggers/with-schedule
+                       (cron/schedule
+                       (cron/cron-schedule EVERY-HOUR))))]
     (scheduler/schedule scheduler job trigger)))
