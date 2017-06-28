@@ -41,7 +41,7 @@
   (post-status "main.png"))
 
 (defn -main [& args]
-  (let [EVERY-HOUR "0 0 * * * ?"
+  (let [EVERY-HOUR "0 * * * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)
