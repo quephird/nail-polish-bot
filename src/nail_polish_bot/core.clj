@@ -22,11 +22,21 @@
                                     :body [(req/file-body-part image-file-name)
                                            (req/status-body-part "")])))
 
+
+(defn build-povray-args [povray-includes-dir
+                         povray-file
+                         polish-color]
+  (let [user-param-args (->> polish-color
+                             (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B"])
+                             (clojure.string/join " "))]
+    (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600 %s" povray-includes-dir povray-file user-param-args)))
+
 (defn render-image []
-  (let [povray-bin          "povray"
+  (let [polish-color        (take 3 (repeatedly #(rand)))
+        povray-bin          "povray"
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
-        povray-args         (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600" povray-includes-dir povray-file)
+        povray-args         (build-povray-args povray-includes-dir povray-file polish-color)
         process             (sh/proc povray-bin povray-args)
         exit                (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning

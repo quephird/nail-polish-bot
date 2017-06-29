@@ -32,7 +32,7 @@ light_source{
 
 object {
     DanieBottleCapOn(
-        RandomColor(),
+        <R, G, B>,
         360*rand(My_seed)
         65)
     rotate    <0, 20-40*rand(My_seed), 0>
