@@ -11,17 +11,17 @@
 
 ; TODO: Figure out how to capture color, percentage full, and other
 ;       attributes of image and incorporate them into the status.
-(defn post-status [image-file-name]
+(defn post-status [image-file-name [r g b]]
   (let [env-vars  (map env/env [:app-consumer-key
                                 :app-consumer-secret
                                 :user-access-token
                                 :user-access-token-secret])
-        bot-creds (apply oauth/make-oauth-creds env-vars)]
+        bot-creds (apply oauth/make-oauth-creds env-vars)
+        status    (format "Nail polish color: R: %.3f G: %.3f B: %.3f" r g b)]
     ; TODO: Need to check env-vars to see that it actually has something
     (api/statuses-update-with-media :oauth-creds bot-creds
                                     :body [(req/file-body-part image-file-name)
-                                           (req/status-body-part "")])))
-
+                                           (req/status-body-part status)])))
 
 (defn build-povray-args [povray-includes-dir
                          povray-file
@@ -31,9 +31,8 @@
                              (clojure.string/join " "))]
     (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600 %s" povray-includes-dir povray-file user-param-args)))
 
-(defn render-image []
-  (let [polish-color        (take 3 (repeatedly #(rand)))
-        povray-bin          "povray"
+(defn render-image [polish-color]
+  (let [povray-bin          "povray"
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
         povray-args         (build-povray-args povray-includes-dir povray-file polish-color)
@@ -45,10 +44,10 @@
       (println "💅 Yay! Image generated successfully 💅"))))
 
 ; TODO: Need to generate file name and pass it into render-image and post-status
-(defjob PostNewImageJob
-  [ctx]
-  (render-image)
-  (post-status "main.png"))
+(defjob PostNewImageJob [ctx]
+  (let [polish-color (take 3 (repeatedly #(rand)))]
+    (render-image polish-color)
+    (post-status "main.png" polish-color)))
 
 (defn -main [& args]
   (let [EVERY-HOUR "0 0 * * * ?"

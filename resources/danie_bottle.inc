@@ -102,7 +102,7 @@ union {
         translate <0, 0.5, 0>
     }
 
-    // Side label
+    // Side label placed in rectangular cutout
     object {
         Bevelled_Text (
             "./texgyreadventor-regular.ttf", // font file
