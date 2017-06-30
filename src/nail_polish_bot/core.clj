@@ -11,13 +11,13 @@
 
 ; TODO: Figure out how to capture color, percentage full, and other
 ;       attributes of image and incorporate them into the status.
-(defn post-status [image-file-name [r g b]]
+(defn post-status [image-file-name [r g b] percent-full]
   (let [env-vars  (map env/env [:app-consumer-key
                                 :app-consumer-secret
                                 :user-access-token
                                 :user-access-token-secret])
         bot-creds (apply oauth/make-oauth-creds env-vars)
-        status    (format "Nail polish color: R: %.3f G: %.3f B: %.3f" r g b)]
+        status    (format "(R, G, B): (%.3f, %.3f, %.3f); percent full: %2.1f" r g b percent-full)]
     ; TODO: Need to check env-vars to see that it actually has something
     (api/statuses-update-with-media :oauth-creds bot-creds
                                     :body [(req/file-body-part image-file-name)
@@ -25,17 +25,19 @@
 
 (defn build-povray-args [povray-includes-dir
                          povray-file
-                         polish-color]
-  (let [user-param-args (->> polish-color
-                             (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B"])
-                             (clojure.string/join " "))]
-    (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600 %s" povray-includes-dir povray-file user-param-args)))
+                         polish-color
+                         percent-full]
+  (let [user-args (->> (conj polish-color percent-full)
+                    (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull"])
+                    (clojure.string/join " "))]
+    (println user-args)
+    (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600 %s" povray-includes-dir povray-file user-args)))
 
-(defn render-image [polish-color]
+(defn render-image [polish-color percent-full]
   (let [povray-bin          "povray"
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
-        povray-args         (build-povray-args povray-includes-dir povray-file polish-color)
+        povray-args         (build-povray-args povray-includes-dir povray-file polish-color percent-full)
         process             (sh/proc povray-bin povray-args)
         exit                (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning
@@ -45,9 +47,10 @@
 
 ; TODO: Need to generate file name and pass it into render-image and post-status
 (defjob PostNewImageJob [ctx]
-  (let [polish-color (take 3 (repeatedly #(rand)))]
-    (render-image polish-color)
-    (post-status "main.png" polish-color)))
+  (let [polish-color (vec (take 3 (repeatedly #(rand))))
+        percent-full (+ 15 (rand 80))]
+    (render-image polish-color percent-full)
+    (post-status "main.png" polish-color percent-full)))
 
 (defn -main [& args]
   (let [EVERY-HOUR "0 0 * * * ?"
