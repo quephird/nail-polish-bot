@@ -11,4 +11,5 @@
                  [me.raynes/conch "0.8.0"]
                  [twitter-api "1.8.0"]]
   :min-lein-version "2.0.0"
+  :source-paths ["src/clojure"]
   :main nail-polish-bot.core)

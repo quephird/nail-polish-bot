@@ -27,11 +27,15 @@
                          povray-file
                          polish-color
                          percent-full]
-  (let [user-args (->> (conj polish-color percent-full)
-                    (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull"])
-                    (clojure.string/join " "))]
-    (println user-args)
-    (format "-d +Lresources +L%s +I%s +Omain.png +W800 +H600 %s" povray-includes-dir povray-file user-args)))
+  (let [povray-src-dir   "src/povray/"
+        user-args        (->> (conj polish-color percent-full)
+                           (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull"])
+                           (clojure.string/join " "))]
+    (format "-d +L%s +L%s +I%s +Omain.png +W800 +H600 %s"
+            povray-src-dir
+            povray-includes-dir
+            povray-file
+            user-args)))
 
 (defn render-image [polish-color percent-full]
   (let [povray-bin          "povray"
@@ -52,6 +56,7 @@
     (render-image polish-color percent-full)
     (post-status "main.png" polish-color percent-full)))
 
+; TODO: Move all job stuff out into new namespace
 (defn -main [& args]
   (let [EVERY-HOUR "0 0 * * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
