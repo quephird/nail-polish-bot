@@ -31,7 +31,17 @@
         user-args        (->> (conj polish-color percent-full)
                            (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull"])
                            (clojure.string/join " "))]
-    (format "-d +L%s +L%s +I%s +Omain.png +W800 +H600 %s"
+    ; This command arg list represents the following options:
+    ;
+    ; -d Turns off the image display after rendering
+    ; +A Turns on antialiasing
+    ; +R3 Specifies the antialiasing depth to 3 on a scale of 1-9
+    ; +L Specifies the directories to look for include and project files
+    ; +I Specifies the input file name
+    ; +O Specifies the output file name
+    ; +W Specifies the image width
+    ; +H Specifies the image height
+    (format "-d +A +R3 +L%s +L%s +I%s +Omain.png +W800 +H600 %s"
             povray-src-dir
             povray-includes-dir
             povray-file
