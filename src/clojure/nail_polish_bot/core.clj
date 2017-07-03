@@ -11,7 +11,7 @@
 
 ; TODO: Figure out how to capture color, percentage full, and other
 ;       attributes of image and incorporate them into the status.
-(defn post-status [image-file-name [r g b] percent-full]
+(defn post-status [image-file-name [r g b] percent-full bottle-number]
   (let [env-vars  (map env/env [:app-consumer-key
                                 :app-consumer-secret
                                 :user-access-token
@@ -61,6 +61,7 @@
       (println "💅 Yay! Image generated successfully 💅"))))
 
 ; TODO: Need to generate file name and pass it into render-image and post-status
+; TODO: Need to pass params as a single hashmap instead of individual one
 (defjob PostNewImageJob [ctx]
   (let [polish-color (vec (take 3 (repeatedly #(rand))))
         percent-full (+ 15 (rand 80))
@@ -69,6 +70,7 @@
     (post-status "main.png" polish-color percent-full bottle-number)))
 
 ; TODO: Move all job stuff out into new namespace
+; TODO: Need way better logging
 (defn -main [& args]
   (let [EVERY-HOUR "0 0 * * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
