@@ -8,7 +8,8 @@ global_settings { assumed_gamma 1.0 }
 #include "stones.inc"
 #include "textures.inc"
 
-#include "./danie_bottle.inc"
+#include "danie_bottle.inc"
+#include "keflon_bottle.inc"
 
 // Random color generator with moving seed
 #declare My_seed = seed(now * 100000);
@@ -31,12 +32,24 @@ light_source{
 }
 
 object {
-    DanieBottleCapOn(
-        // NOTA BENE: R, G, B, and PercentFull all
-        // get passed in from the command line
-        <R, G, B>,
-        360*rand(My_seed)
-        PercentFull)
+    #switch (BottleNumber)
+    #case (0)
+        DanieBottleCapOn(
+            // NOTA BENE: R, G, B, and PercentFull all
+            // get passed in from the command line
+            <R, G, B>,
+            360*rand(My_seed)
+            PercentFull)
+        #break
+    #case (1)
+        KeflonBottleCapOn(
+            // NOTA BENE: R, G, B, and PercentFull all
+            // get passed in from the command line
+            <R, G, B>,
+            360*rand(My_seed)
+            PercentFull)
+        #break
+    #end
     rotate    <0, 20-40*rand(My_seed), 0>
     translate <-3, 0.625, -3.0>
 }
