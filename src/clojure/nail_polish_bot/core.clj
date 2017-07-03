@@ -26,10 +26,11 @@
 (defn build-povray-args [povray-includes-dir
                          povray-file
                          polish-color
-                         percent-full]
+                         percent-full
+                         bottle-number]
   (let [povray-src-dir   "src/povray/"
-        user-args        (->> (conj polish-color percent-full)
-                           (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull"])
+        user-args        (->> (conj polish-color percent-full bottle-number)
+                           (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull" "BottleNumber"])
                            (clojure.string/join " "))]
     ; This command arg list represents the following options:
     ;
@@ -47,11 +48,11 @@
             povray-file
             user-args)))
 
-(defn render-image [polish-color percent-full]
+(defn render-image [polish-color percent-full bottle-number]
   (let [povray-bin          "povray"
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
-        povray-args         (build-povray-args povray-includes-dir povray-file polish-color percent-full)
+        povray-args         (build-povray-args povray-includes-dir povray-file polish-color percent-full bottle-number)
         process             (sh/proc povray-bin povray-args)
         exit                (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning
@@ -62,9 +63,10 @@
 ; TODO: Need to generate file name and pass it into render-image and post-status
 (defjob PostNewImageJob [ctx]
   (let [polish-color (vec (take 3 (repeatedly #(rand))))
-        percent-full (+ 15 (rand 80))]
-    (render-image polish-color percent-full)
-    (post-status "main.png" polish-color percent-full)))
+        percent-full (+ 15 (rand 80))
+        bottle-number (rand-int 2)]
+    (render-image polish-color percent-full bottle-number)
+    (post-status "main.png" polish-color percent-full bottle-number)))
 
 ; TODO: Move all job stuff out into new namespace
 (defn -main [& args]
