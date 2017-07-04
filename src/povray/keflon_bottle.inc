@@ -60,13 +60,23 @@ union {
     }
 
     // Nail polish
-    object {
-    Round_Cone(
-        <0, 0.1, 0>, 0.5    // Center and radius of one end
-        <0, 0.95, 0>, 0.38    // Center and radius of other end
-        0.05, // rounding radius,
-        1)
-    pigment {color nailColor}
+    difference {
+        object {
+            Round_Cone(
+                <0, 0.1, 0>, 0.5    // Center and radius of one end
+                <0, 0.95, 0>, 0.38    // Center and radius of other end
+                0.05, // rounding radius,
+                1)
+        }
+        object {
+            Round_Cone(
+                <0, 0.1, 0>, 0.5    // Center and radius of one end
+                <0, 0.95, 0>, 0.38    // Center and radius of other end
+                0.05, // rounding radius,
+                1)
+            translate <0, percentFull*0.01-0.05, 0>
+        }
+        pigment {color nailColor}
     }
 }
 #end
