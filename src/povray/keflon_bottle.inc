@@ -67,8 +67,8 @@ union {
             roughness .001
             reflection { 0.75 }
         }
-        scale <1,10,1>
-        translate <0, -0.4, 0>
+        scale <1, 12, 1>
+        translate <0, -0.55, 0>
     }
 }
 #end
@@ -115,7 +115,7 @@ union {
 union{
     object {
         KeflonCap ()
-        translate <0, 1.5, 0>
+        translate <0, 1.7, 0>
         rotate <0, capAngleY, 0>
     }
 
