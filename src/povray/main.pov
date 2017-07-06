@@ -69,15 +69,34 @@ superellipsoid {
 }
 
 // Rear wall
+// Ceramic tiles
+#for (i, 0, 5)
+    #for (j, 0, 4)
+        superellipsoid {
+            <0.05, 0.5>
+            scale <1.95, 1.95, 0.1>
+            normal { bumps 0.1 scale 1.0 }
+            pigment { color <0.5, 0.6, 0.95> }
+            finish {
+                phong 1.0
+                diffuse 0.7
+                reflection 0.3
+            }
+            translate <-17.5+i*4, -10+j*4, 4>
+        }
+    #end
+#end
+// Grout
 plane {
     <0, 0, 1>, 0.1
-    pigment {color <0.5, 0.5, 0.8>}
-    translate <0, 0, 4.0>
+    pigment { color <1.0, 1.0, 0.9> }
+    finish { ambient .4 diffuse 0.1 }
+    translate <0, 0, 4.05>
 }
 
 // Mirror
 box {
     <-4, 0.0, 0>, <4.0, 10, 0>
     texture {T_Silver_1C}
-    translate <0, 3.0, 4>
+    translate <0, 3.0, 3.75>
 }
