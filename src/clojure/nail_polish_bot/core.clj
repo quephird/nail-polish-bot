@@ -65,7 +65,7 @@
 (defjob PostNewImageJob [ctx]
   (let [polish-color (vec (take 3 (repeatedly #(rand))))
         percent-full (+ 15 (rand 80))
-        bottle-number (rand-int 2)]
+        bottle-number (rand-int 3)]
     (render-image polish-color percent-full bottle-number)
     (post-status "main.png" polish-color percent-full bottle-number)))
 

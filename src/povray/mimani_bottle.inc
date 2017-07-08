@@ -1,8 +1,8 @@
 #macro MimaniCap ()
 object{
     Round_Cone(
-        <0, 0, 0>, 0.22
-        <0, 1.0, 0>, 0.17 
+        <0, 0, 0>, 0.25
+        <0, 1.2, 0>, 0.2
         0.02, // rounding radius,
         1)
     pigment { BrightGold }
@@ -13,7 +13,6 @@ object{
         roughness .1
         reflection { 0.75 }
     }
-    scale <1, 1, 1>                          
 }
 #end
 
@@ -21,7 +20,7 @@ object{
 union {
     object {
         MimaniCap ()
-        translate <0, 0.9, 0>
+        translate <0, 1.2, 0>
     }
     // Bottle
     object {
@@ -31,33 +30,53 @@ union {
             0.15,
             1)
         material { M_Glass3 }
-        scale <1.0, 1.0, 0.7>
+        scale <1.1, 1.3, 0.8>
         translate <0, -0.1, 0>
     }
 
+    // Label
 		object {
 				cylinder {
 				    -y, y, 0.3
 				    pigment {
 				        object {
-				            text {
-				                ttf "senator_thin.ttf",
-				                "M I M A N I",
-				                2.1,
-				                0
-				                scale <.08, 0.25, 1.0>
-				            }
+				        	  union {
+						            text {
+						                ttf "senator_thin.ttf",
+						                "_________________",
+						                2.1,
+						                0
+						                scale <.08, 0.3, 1.0>
+		    			    	        translate <-0.05, 0.25, 0.0>
+						            }
+						            text {
+						                ttf "senator_thin.ttf",
+						                "M I M A N I",
+						                2.1,
+						                0
+						                scale <.08, 0.3, 1.0>
+						            }
+						            text {
+						                ttf "senator_thin.ttf",
+						                "_________________",
+						                2.1,
+						                0
+						                scale <.08, 0.3, 1.0>
+		    			    	        translate <-0.05, -0.05, 0.0>
+						            }
+						        }
 				        pigment { rgbt <1.0, 1.0, 1.0, 1.0> }
 				        pigment { BrightGold }
+                }
+                warp {
+				            cylindrical
+				            orientation <0, 0, 1>
+				        }
+				        rotate <0, 125, 0>
+				        translate <0, 0.7, 0.0>
 				    }
-				    warp {
-				        cylindrical
-				        orientation <0, 0, 1>
-				    }
-				    rotate <0, 125, 0>
-				    translate <0, 0.45, 0.0>
-				}
-		}}
+		    }
+		}
 
     // Polish
     difference {
@@ -68,8 +87,8 @@ union {
 		            0.15,
 		            1)
 		        pigment {color nailColor}
-		        scale <1, 1, 0.6>         
-		        translate <0, 0, 0>         
+		        scale <1, 1, 0.6>
+		        translate <0, 0, 0>
 		    }
 		    object {
 		        Round_Cone(
@@ -78,8 +97,8 @@ union {
 		            0.15,
 		            1)
 		        pigment {color nailColor}
-		        scale <1, 1, 0.6>         
-		        translate <0, 0.9*percentFull*0.01, 0>         
+		        scale <1, 1, 0.6>
+		        translate <0, 0.9*percentFull*0.01, 0>
 		    }
     }
 }
