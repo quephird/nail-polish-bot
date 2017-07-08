@@ -56,7 +56,7 @@ object {
     #end
     rotate    <0, 20-40*rand(My_seed), 0>
     translate <-3, 0.625, -3.0>
-	}
+}
 
 // Marble counter top
 superellipsoid {
