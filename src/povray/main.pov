@@ -10,6 +10,7 @@ global_settings { assumed_gamma 1.0 }
 
 #include "danie_bottle.inc"
 #include "keflon_bottle.inc"
+#include "mimani_bottle.inc"
 
 // Random color generator with moving seed
 #declare My_seed = seed(now * 100000);
@@ -31,28 +32,37 @@ light_source{
 	  color White
 }
 
+#declare BottleNumber = 2;
+#declare R = 0.1;
+#declare G = 0.1;
+#declare B = 0.9;
+#declare PercentFull = 50;
+
+// NOTA BENE: R, G, B, and PercentFull all
+// get passed in from the command line
 object {
     #switch (BottleNumber)
     #case (0)
         DanieBottleCapOn(
-            // NOTA BENE: R, G, B, and PercentFull all
-            // get passed in from the command line
             <R, G, B>,
             360*rand(My_seed)
             PercentFull)
         #break
     #case (1)
         KeflonBottleCapOn(
-            // NOTA BENE: R, G, B, and PercentFull all
-            // get passed in from the command line
             <R, G, B>,
             360*rand(My_seed)
+            PercentFull)
+        #break
+    #case (2)
+        MimaniBottleCapOn(
+            <R, G, B>,
             PercentFull)
         #break
     #end
     rotate    <0, 20-40*rand(My_seed), 0>
     translate <-3, 0.625, -3.0>
-}
+	}
 
 // Marble counter top
 superellipsoid {
