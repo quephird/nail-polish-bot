@@ -71,7 +71,10 @@ union {
 		object {
 				cylinder {
             // TODO: Look into what y actually refers to
-				    -y, y, 0.3
+            // The z parameter is quite important here, needs to be
+            // close to the z-value for the bottle and obviously
+            // greater than the polish to avoid clipping.
+				    -y, y, 0.39
 				    pigment {
 				        object {
 				        	  union {
@@ -106,7 +109,7 @@ union {
 				            cylindrical
 				            orientation <0, 0, 1>
 				        }
-				        rotate <0, 125, 0>
+				        rotate <0, 135, 0>
 				        translate <0, 0.7, 0.0>
 				    }
 		    }
