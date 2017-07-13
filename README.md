@@ -262,6 +262,18 @@ This can also be configured in the UI but I couldn’t get the worker setting to
 heroku ps:scale worker=1
 ```
 
+#### How to pass user-defined parameters to POV-Ray
+
+I wanted to not only randomly generate the color of the nail polish, but also to include the RGB values in the status.
+And so I either needed to generate values within POV-Ray and return them back to Clojure somehow, or have Clojure do so and pass them into POV-Ray.
+The former is simply not possible, but after some digging around POV-Ray forums I discovered that you can pass user-defined parameters from the command line into a POV-Ray script: http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1.
+Unfortunately, POV-Ray only supports passing in of float values not strings: http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E
+
+## Epilogue
+
+I may include other things that I learn along the way as this project evolves.
+I hope that what I've written here so far is helpful to others.
+
 ## Useful links
 
 These are but some of the important resources that I used for this project.
