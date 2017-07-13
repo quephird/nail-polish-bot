@@ -1,10 +1,8 @@
-# nail-polish-bot
-
 ## Purpose
 
 This is not a typical README in that I won't elaborate on how to run this code on your machine.
 I had to learn _many_ things for this small project,
-and so I felt it was much more useful to tell a story of how I figured out how to put this bot together from start to finish.
+and so I felt it was much more useful to share the story of how I figured out how to put this bot together from start to finish.
 
 ## Project goals
 
@@ -48,7 +46,7 @@ To add the buildpack to my dyno, I needed to run the following:
 * Run heroku buildpacks:add --index 1 https://github.com/heroku/heroku-buildpack-apt
 ```
 
-All I needed to do was create a new file called `Aptfile` and add desired packages to install on each line;
+All I needed to do was create a new file at the project root called `Aptfile` and add desired packages to install on each line;
 in this case I wanted to install POV-Ray, so I just needed this in the file:
 
 ```
@@ -116,11 +114,11 @@ povray -d +Ihello.pov +Ohello.png +W800 +H600
 
 ... where the switches do the following:
 
-* -d Turns off the image display after rendering
-* +I Specifies the input file name
-* +O Specifies the output file name
-* +W Specifies the image width
-* +H Specifies the image height
+* `-d` Turns off the image display after rendering
+* `+I` Specifies the input file name
+* `+O` Specifies the output file name
+* `+W` Specifies the image width
+* `+H` Specifies the image height
 
 ... and that worked like a charm.
 
@@ -217,7 +215,56 @@ And so, I set up my credentials in my Clojure code thusly:
            (api/status-body-part “Some status message!“)])))
 ```
 
+#### Insuring POV-Ray can find all resources
+
+Once I included POV-Ray source code for a minimal scene and tried to render the image from Clojure, I was encountering multiple errors.
+The first problem is that the `povray` command needs to know where all the project scene, includes, and fonts are.
+To do that, I needed to use the `+L` command line parameter to specify where to look for all of the input files, which I hardcoded into the program.
+It also turned out that I also needed to specify the location of the include files that come bundled with POV-Ray, such as those for colors, textures, and shapes.
+For that, I decided to use an environment variable, also managed as a Heroku config var, rather than hard code it into the Clojure code.
+And that all worked!
+
+#### Setting up a scheduled job
+
+I wanted my bot to tweet once per hour so I needed to figure out what to use for a job scheduler.
+Heroku does offer their scheduler, https://devcenter.heroku.com/articles/scheduler, but I wanted to minimize the number of external dependencies or vendor-specific solutions.
+I decided to go with `michaelklishin/quartzite` since that has worked pretty well in other projects I've been involved in.
+I just needed to create a job, a trigger with a simple cron expression (fir the purposes of testing once per minute), and a scheduler wired up to start in `-main`.
+Running `lein run`, I was able to see tweets being posted every minute from my bot!
+
+#### Insuring `-main` is invoked on dyno
+
+After deploying this latest version of my bot, I saw that nothing was being tweeted.
+I wanted to take a look at the application log file on the dyno; the Heroku CLI provides an easy means of viewing it just by running `heroku logs`.
+By default, Heroku assumes a web app is being deployed which explains why I kept seeing log entires like this:
+
+```
+2017-07-09T18:11:47.341027+00:00 app[web.1]: Error R10 (Boot timeout) -> Web process failed to bind to $PORT within 60 seconds of launch
+2017-07-09T18:11:47.436549+00:00 app[web.1]: Stopping process with SIGKILL
+2017-07-09T18:11:47.513171+00:00 app[web.1]: Process exited with status 137
+2017-07-09T18:11:48.634523+00:00 app[web.1]: State changed from starting to crashed
+2017-07-09T18:11:50.991928+00:00 app[web.1]: State changed from crashed to starting
+2017-07-09T18:11:50.991939+00:00 app[web.1]: Starting process with command 'lein trampoline run'
+```
+
+The reason why `-main` wasn’t being invoked was because I needed to add a `Procfile` and specify a _worker_ to invoke `lein run`.
+This file also needs to be at the root of the project directory and simply needed to contain this:
+
+```
+worker: lein run
+```
+
+Alas, even after deploying the new version of my bot with a `Procfile`, `-main` still wasn’t being invoked.
+It turns out that you have to also configure the dyno in addition to the app itself for everything to work properly.
+This can also be configured in the UI but I couldn’t get the worker setting to stick and so I just ran the following on the CLI:
+
+```
+heroku ps:scale worker=1
+```
+
 ## Useful links
+
+These are but some of the important resources that I used for this project.
 
 Leiningen  
 [https://github.com/technomancy/leiningen](https://github.com/technomancy/leiningen)
