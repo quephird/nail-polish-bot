@@ -265,9 +265,21 @@ heroku ps:scale worker=1
 #### How to pass user-defined parameters to POV-Ray
 
 I wanted to not only randomly generate the color of the nail polish, but also to include the RGB values in the status.
-And so I either needed to generate values within POV-Ray and return them back to Clojure somehow, or have Clojure do so and pass them into POV-Ray.
-The former is simply not possible, but after some digging around POV-Ray forums I discovered that you can pass user-defined parameters from the command line into a POV-Ray script: http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1.
-Unfortunately, POV-Ray only supports passing in of float values not strings: http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E
+And so I either needed to somehow generate POV-Ray source code files on the fly from Clojure, or simply have Clojure generate random numbers and somehow pass them into POV-Ray.
+The former felt like a messy and potentially complex task,
+especially if I considered writing a Clojure to POV-Ray transpiler,
+but after some digging around POV-Ray forums I discovered that you can pass user-defined parameters from the command line into a POV-Ray script, http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1.
+although unfortunately, POV-Ray only supports passing in of float values not strings. http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E
+The latter wasn't too big a deal at this time as I only needed floats for the RGB components.
+To randomly select a bottle, I decided for the time being to pass in a number and use POV-Ray's `#switch` macro to select which one to place in the scene.
+
+So, in order to pass in a name/value pair, say Foo needs to be 42.0, you just need to construct something like the following:
+
+```
+povray Declare=Foo=42.0 ...
+```
+
+For additional user parameters, you just need to append a similar command line argument for each one.
 
 ## Epilogue
 
@@ -301,6 +313,10 @@ twitter-api
 
 quartzite  
 [https://github.com/michaelklishin/quartzite](https://github.com/michaelklishin/quartzite)
+
+## Footnotes
+
+
 
 ## License
 
