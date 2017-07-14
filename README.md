@@ -188,7 +188,7 @@ I was hoping for an easy-to-use library for using the Twitter API and I discover
 I was quickly able to use the library with my secrets in the REPL to post test tweets.
 But I did not want to hardcode any of the four secrets that the bot needed for the Twitter API.
 To avoid that, I decided to try using environment variables to store them.
-It turns out that the Heroku console and CLI both allow for setting of environment variables.[¹](#env-vars)
+It turns out that the Heroku console and CLI both allow for setting of environment variables. [¹](#env-vars)
 I also found a Clojure library, `weavejester/environ`, that can be used to easily retrieve them from the OS.
 To retrieve a value, say for `FOO_VAR`, I simply needed to refer to the keywordized, dashified, and lowercased version of the name:
 
@@ -227,7 +227,7 @@ And that all worked!
 #### Setting up a scheduled job
 
 I wanted my bot to tweet once per hour so I needed to figure out what to use for a job scheduler.
-Heroku does offer their scheduler[²](#scheduler) but I wanted to minimize the number of external dependencies or vendor-specific solutions.
+Heroku does offer their scheduler [²](#scheduler) but I wanted to minimize the number of external dependencies or vendor-specific solutions.
 I decided to go with `michaelklishin/quartzite` since that has worked pretty well in other projects I've been involved in.
 I just needed to create a job, a trigger with a simple cron expression (fir the purposes of testing once per minute), and a scheduler wired up to start in `-main`.
 Running `lein run`, I was able to see tweets being posted every minute from my bot!
@@ -255,7 +255,7 @@ worker: lein run
 ```
 
 Alas, even after deploying the new version of my bot with a `Procfile`, `-main` still wasn’t being invoked.
-It turns out that you have to also configure the dyno in addition to the app itself for everything to work properly.[³](#dyno-config)
+It turns out that you have to also configure the dyno in addition to the app itself for everything to work properly. [³](#dyno-config)
 This can also be configured in the UI but I couldn’t get the worker setting to stick and so I just ran the following on the CLI:
 
 ```
@@ -268,8 +268,8 @@ I wanted to not only randomly generate the color of the nail polish, but also to
 And so I either needed to somehow generate POV-Ray source code files on the fly from Clojure, or simply have Clojure generate random numbers and somehow pass them into POV-Ray.
 The former felt like a messy and potentially complex task,
 especially if I considered writing a Clojure to POV-Ray transpiler,
-but after some digging around POV-Ray forums I discovered that you can pass user-defined parameters from the command line into a POV-Ray script[⁴](#user-parameters),
-although unfortunately, POV-Ray only supports passing in of float values not strings.[⁵](#floats)
+but after some digging around POV-Ray forums I discovered that you can pass user-defined parameters from the command line into a POV-Ray script [⁴](#user-parameters),
+although unfortunately, POV-Ray only supports passing in of float values not strings. [⁵](#floats)
 The latter wasn't too big a deal at this time as I only needed floats for the RGB components.
 To randomly select a bottle, I decided for the time being to pass in a number and use POV-Ray's `#switch` macro to select which one to place in the scene.
 
@@ -319,9 +319,7 @@ quartzite
 <a name="env-vars">¹</a> This nice article discusses how: [https://devcenter.heroku.com/articles/config-vars](https://devcenter.heroku.com/articles/config-vars)  
 <a name="scheduler">²</a> [https://devcenter.heroku.com/articles/scheduler](https://devcenter.heroku.com/articles/scheduler)  
 <a name="dyno-config">³</a> Bless the person who posted this article, [https://stackoverflow.com/a/39533774](https://stackoverflow.com/a/39533774).  
-
 <a name="user-parameters">⁴</a>  [http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1](http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1)  
-
 <a name="floats">⁵</a>  [http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E](http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E)  
 
 
