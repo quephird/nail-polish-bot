@@ -11,6 +11,7 @@ global_settings { assumed_gamma 1.0 }
 #include "danie_bottle.inc"
 #include "keflon_bottle.inc"
 #include "mimani_bottle.inc"
+#include "polish_color.inc"
 #include "wall_mirror.inc"
 #include "sink.inc"
 #include "wall.inc"
@@ -30,20 +31,28 @@ light_source{
 }
 
 #declare My_seed = seed(now * 100000);
+#declare BottleNumber = 0;
+#declare R = 0.50;
+#declare G = 1.0;
+#declare B = 0.0;
+#declare PercentFull = 70;
+#declare PolishType = 0;
 
-// NOTA BENE: R, G, B, and PercentFull all
+// NOTA BENE: BottleNumber, R, G, B, PolishType, and PercentFull all
 // get passed in from the command line
 object {
     #switch (BottleNumber)
     #case (0)
         DanieBottleCapOn(
             <R, G, B>,
+            PolishType,
             360*rand(My_seed)
             PercentFull)
         #break
     #case (1)
         KeflonBottleCapOn(
             <R, G, B>,
+            PolishType,
             360*rand(My_seed)
             PercentFull)
         #break

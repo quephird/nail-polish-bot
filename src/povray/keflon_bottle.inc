@@ -73,16 +73,26 @@ union {
 }
 #end
 
-#macro KeflonBottle (nailColor, capAngleY, percentFull)
+#macro KeflonBottle (nailColor, polishType, capAngleY, percentFull)
 union {
     // Main body
-    object {
-    Round_Cone(
-        <0, 0, 0>, 0.6    // Center and radius of one end
-        <0, 1.0, 0>, 0.4    // Center and radius of other end
-        0.05, // rounding radius,
-        1)
-    material { M_Glass3 }
+    difference {
+		    object {
+				    Round_Cone(
+				        <0, 0, 0>, 0.6    // Center and radius of one end
+				        <0, 1.0, 0>, 0.4  // Center and radius of other end
+				        0.05,             // rounding radius,
+				        1)
+		    }
+		    object {
+				    Round_Cone(
+				        <0, 0, 0>, 0.51
+				        <0, 0.96, 0>, 0.39
+				        0.05,
+				        1)
+				    translate <0.0, 0.025, 0.0>
+		    }
+		    material { M_Glass3 }
     }
 
     // Nail polish
@@ -106,12 +116,12 @@ union {
                 1)
             translate <0, 0.85*percentFull*0.01, 0>
         }
-        pigment {color nailColor}
+        PolishColor(nailColor, polishType)
     }
 }
 #end
 
-#macro KeflonBottleCapOn (nailColor, capAngleY, percentFull)
+#macro KeflonBottleCapOn (nailColor, polishType, capAngleY, percentFull)
 union{
     object {
         KeflonCap ()
@@ -120,7 +130,7 @@ union{
     }
 
     object {
-        KeflonBottle (nailColor, capAngleY, percentFull)
+        KeflonBottle (nailColor, polishType, capAngleY, percentFull)
     }
 }
 #end

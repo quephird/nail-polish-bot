@@ -1,4 +1,4 @@
-#macro DanieBottle (nailColor, capAngleY, percentFull)
+#macro DanieBottle (polishColor, polishType, capAngleY, percentFull)
 union {
     // Bottle
     difference {
@@ -12,7 +12,14 @@ union {
                 diffuse 0.7
                 reflection 0.3
             }
-            translate <0,0.5,0>
+            translate <0, 0.5, 0>
+        }
+        // Inside of bottle
+        superellipsoid {
+            <0.25, 0.25>
+            material { M_Glass3 }
+            scale <0.36, 0.51, 0.36>
+            translate <0, 0.5, 0>
         }
         // Rectangular cutout on side
         superellipsoid {
@@ -98,7 +105,7 @@ union {
             scale <0.36, 0.51, 0.36>
             translate <0, percentFull*0.01-0.05, 0>
         }
-        pigment {color nailColor}
+        PolishColor(polishColor, polishType)
         translate <0, 0.5, 0>
     }
 
@@ -126,7 +133,7 @@ union {
 }
 #end
 
-#macro DanieCap (polishColor, onBottle)
+#macro DanieCap (polishColor, polishType, onBottle)
 union {
     // Main body
     difference {
@@ -219,17 +226,16 @@ union {
 }
 #end
 
-#macro DanieBottleCapOn (nailColor, capAngleY, percentFull)
+#macro DanieBottleCapOn (polishColor, polishType, capAngleY, percentFull)
 union{
-	  // Cap
     object {
-        DanieCap (nailColor, true)
+        DanieCap (polishColor, polishType, true)
         translate <0, 1.625, 0>
         rotate <0, capAngleY, 0>
     }
-	  // Cap
+
     object {
-        DanieBottle (nailColor, capAngleY, percentFull)
+        DanieBottle (polishColor, polishType, capAngleY, percentFull)
     }
 }
 #end
