@@ -5,11 +5,12 @@
 (defn build-povray-args [povray-includes-dir
                          povray-file
                          polish-color
+                         polish-type
                          percent-full
                          bottle-number]
   (let [povray-src-dir   "src/povray/"
-        user-args        (->> (conj polish-color percent-full bottle-number)
-                           (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PercentFull" "BottleNumber"])
+        user-args        (->> (conj polish-color polish-type percent-full bottle-number)
+                           (map #(format "Declare=%s=%s" %1 %2) ["R" "G" "B" "PolishType" "PercentFull" "BottleNumber"])
                            (clojure.string/join " "))]
     ; This command arg list represents the following options:
     ;
@@ -28,11 +29,11 @@
             user-args)))
 
 ; TODO: Need logging
-(defn render-image [polish-color percent-full bottle-number]
+(defn render-image [polish-color polish-type percent-full bottle-number]
   (let [povray-bin          "povray"
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
-        povray-args         (build-povray-args povray-includes-dir povray-file polish-color percent-full bottle-number)
+        povray-args         (build-povray-args povray-includes-dir povray-file polish-color polish-type percent-full bottle-number)
         process             (sh/proc povray-bin povray-args)
         exit                (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning

@@ -10,11 +10,12 @@
 ; TODO: Need to pass params as a single hashmap instead of individual one
 ; TODO: Need logging
 (defjob PostNewImageJob [ctx]
-  (let [polish-color (vec (take 3 (repeatedly #(rand))))
-        percent-full (+ 15 (rand 80))
+  (let [polish-color  (vec (take 3 (repeatedly #(rand))))
+        polish-type   (rand-int 2)
+        percent-full  (+ 15 (rand 80))
         bottle-number (rand-int 3)]
-    (povray/render-image polish-color percent-full bottle-number)
-    (twitter/post-status "main.png" polish-color percent-full bottle-number)))
+    (povray/render-image polish-color polish-type percent-full bottle-number)
+    (twitter/post-status "main.png" polish-color polish-type percent-full bottle-number)))
 
 (defn start-scheduler []
   (let [EVERY-HOUR "0 0 * * * ?"
