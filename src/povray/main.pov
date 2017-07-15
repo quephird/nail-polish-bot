@@ -8,13 +8,13 @@ global_settings { assumed_gamma 1.0 }
 #include "stones.inc"
 #include "textures.inc"
 
-#include "danie_bottle.inc"
-#include "keflon_bottle.inc"
-#include "mimani_bottle.inc"
+#include "bottles/danie.inc"
+#include "bottles/keflon.inc"
+#include "bottles/mimani.inc"
+#include "scene/wall_mirror.inc"
+#include "scene/sink.inc"
+#include "scene/wall.inc"
 #include "polish_color.inc"
-#include "wall_mirror.inc"
-#include "sink.inc"
-#include "wall.inc"
 
 // Main camera
 camera {

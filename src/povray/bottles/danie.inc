@@ -112,7 +112,7 @@ union {
     // Side label placed in rectangular cutout
     object {
         Bevelled_Text (
-            "./texgyreadventor-regular.ttf", // font file
+            "texgyreadventor-regular.ttf", // font file
             "danie",  // text
             10 ,      // slice
             35,       // taper
@@ -206,7 +206,7 @@ union {
     // Brand initial on top of cap
     object {
         Bevelled_Text (
-            "./texgyreadventor-bold.ttf", // font file
+            "texgyreadventor-bold.ttf", // font file
             "d",      // text
             30 ,      // slice
             35,       // taper
