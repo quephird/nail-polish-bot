@@ -31,12 +31,6 @@ light_source{
 }
 
 #declare My_seed = seed(now * 100000);
-#declare BottleNumber = 0;
-#declare R = 0.50;
-#declare G = 1.0;
-#declare B = 0.0;
-#declare PercentFull = 70;
-#declare PolishType = 0;
 
 // NOTA BENE: BottleNumber, R, G, B, PolishType, and PercentFull all
 // get passed in from the command line
@@ -46,7 +40,7 @@ object {
         DanieBottleCapOn(
             <R, G, B>,
             PolishType,
-            360*rand(My_seed)
+            360*rand(My_seed),
             PercentFull)
         #break
     #case (1)
@@ -59,6 +53,7 @@ object {
     #case (2)
         MimaniBottleCapOn(
             <R, G, B>,
+            PolishType,
             PercentFull)
         #break
     #end

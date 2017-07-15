@@ -46,7 +46,7 @@ union {
 }
 #end
 
-#macro MimaniBottleCapOn (nailColor, percentFull)
+#macro MimaniBottleCapOn (nailColor, polishType, percentFull)
 union {
     object {
         MimaniCap ()
@@ -54,15 +54,27 @@ union {
     }
 
     // Bottle
-    object {
-        Round_Cone(
-            <0, 0, 0>, 0.4
-            <0, 1.0, 0>, 0.5
-            0.15,
-            1)
-        material { M_Glass3 }
-        scale <1.1, 1.3, 0.8>
-        translate <0, -0.1, 0>
+    difference {
+        object {
+            Round_Cone(
+                <0, 0, 0>, 0.4
+                <0, 1.0, 0>, 0.5
+                0.15,
+                1)
+            material { M_Glass3 }
+            scale <1.1, 1.3, 0.8>
+            translate <0, -0.1, 0>
+        }
+        object {
+            Round_Cone(
+                <0, 0, 0>, 0.36
+                <0, 1.0, 0>, 0.46
+                0.15,
+                1)
+            material { M_Glass3 }
+            scale <1.1, 1.3, 0.8>
+            translate <0, -0.1, 0>
+        }
     }
 
     // Label
@@ -119,22 +131,21 @@ union {
     difference {
 		    object {
 		        Round_Cone(
-		            <0, 0, 0>, 0.3
-		            <0, 0.9, 0>, 0.4
+		            <0, 0, 0>, 0.35
+		            <0, 0.9, 0>, 0.45
 		            0.15,
 		            1)
-		        pigment {color nailColor}
 		        translate <0, 0, 0>
 		    }
 		    object {
 		        Round_Cone(
-		            <0, 0, 0>, 0.4
-		            <0, 0.9, 0>, 0.4
+		            <0, 0, 0>, 0.45
+		            <0, 0.9, 0>, 0.45
 		            0.15,
 		            1)
-		        pigment {color nailColor}
 		        translate <0, 0.9*percentFull*0.01, 0>
 		    }
+        PolishColor(nailColor, polishType)
         scale <1, 1.2, 0.7>
     }
 }
