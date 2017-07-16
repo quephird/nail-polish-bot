@@ -16,11 +16,16 @@ global_settings { assumed_gamma 1.0 }
 #include "scene/wall.inc"
 #include "polish_color.inc"
 
+// Seed for all random number generation below
+#declare My_seed = seed(now * 100000);
+
 // Main camera
 camera {
     perspective angle 75
     right     x*image_width/image_height
-    location  <-2.0, 2.5, -7.0>
+    location  <-2.5+rand(My_seed),
+               2.0+rand(My_seed),
+               -7.5+rand(My_seed)>
     look_at   <-4.0, 1.0, 0.0>
 }
 
@@ -29,8 +34,6 @@ light_source{
 	  <10, 10, -10>
 	  color White
 }
-
-#declare My_seed = seed(now * 100000);
 
 // NOTA BENE: BottleNumber, R, G, B, PolishType, and PercentFull all
 // get passed in from the command line
@@ -68,7 +71,7 @@ object {
 
 object {
     Wall()
-    translate <-17.0, -10.0, 4.0>
+    translate <-17.5, -10.5, 4.0>
 }
 
 object {
