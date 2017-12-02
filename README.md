@@ -175,7 +175,7 @@ Indeed, after doing that, the error went away and I was able to run the remote R
 
 #### Creating a new Twitter account for the bot
 
-Creating a new Twitter account for bot, @nailpolishbot, was trivial.
+Creating a new Twitter account for bot, [@nailpolishbot](https://twitter.com/nailpolishbot), was trivial.
 There was one annoyance in that there is a restriction of only one Twitter account per email address.
 I used a trick by appending `+nailpolishbot` to the email address.
 That way I 1) got to create a new account and 2) emails should still get routed to the same email address; the + is just a tag.
