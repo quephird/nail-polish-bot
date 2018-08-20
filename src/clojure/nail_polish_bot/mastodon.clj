@@ -19,8 +19,8 @@
 (defn post-status
   "`POST`s a message to Mastodon, and optionally with IDs of
    images previously `POST`ed."
-  [message & {:keys [media-ids]}]
-  (let [body      {:status message
+  [status & {:keys [media-ids]}]
+  (let [body      {:status status
                    :media_ids media-ids}
         body-json (json/generate-string body)]
     (post-to-endpoint "statuses"
@@ -50,8 +50,8 @@
 (defn post-status-with-media
   "`POST`s a new status with both the message in the body of the
    toot and the images attached to it."
-  [message filenames]
-  (let [media-ids (->> filenames
-                       (map post-media)
-                       (map get-id-from-attachment))]
-    (post-status message :media-ids media-ids)))
+  [status filename]
+  (let [media-ids [(->> filename
+                        post-media
+                        get-id-from-attachment)]]
+    (post-status status :media-ids media-ids)))
