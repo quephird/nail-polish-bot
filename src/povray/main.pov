@@ -11,6 +11,7 @@ global_settings { assumed_gamma 1.0 }
 #include "bottles/danie.inc"
 #include "bottles/keflon.inc"
 #include "bottles/mimani.inc"
+#include "bottles/twisted_danie.inc"
 #include "scene/wall_mirror.inc"
 #include "scene/sink.inc"
 #include "scene/wall.inc"
@@ -35,6 +36,17 @@ light_source{
 	  color White
 }
 
+/*
+// Uncomment in order to run from within the POV-Ray GUI
+
+#declare BottleNumber = 3;
+#declare R = 0.9;
+#declare G = 0.4;
+#declare B = 0.2;
+#declare PolishType = 1;
+#declare PercentFull = 80;
+*/
+
 // NOTA BENE: BottleNumber, R, G, B, PolishType, and PercentFull all
 // get passed in from the command line
 object {
@@ -57,6 +69,13 @@ object {
         MimaniBottleCapOn(
             <R, G, B>,
             PolishType,
+            PercentFull)
+        #break
+    #case (3)
+        TwistedDanieBottleCapOn(
+            <R, G, B>,
+            PolishType,
+            360*rand(My_seed),
             PercentFull)
         #break
     #end
