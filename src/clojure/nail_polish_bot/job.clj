@@ -22,7 +22,7 @@
   (let [polish-color  (vec (take 3 (repeatedly #(rand))))
         polish-type   (rand-int 2)
         percent-full  (+ 15 (rand 80))
-        bottle-number (rand-int 3)
+        bottle-number (rand-int 4)
         status        (make-status polish-color polish-type percent-full)]
     (povray/render-image polish-color polish-type percent-full bottle-number)
     (mastodon/post-status-with-media status "main.png")
