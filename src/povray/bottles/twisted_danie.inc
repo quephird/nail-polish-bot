@@ -21,6 +21,7 @@ union {
         }
         translate <0, 0.5, 0>
     }
+
     // Inside of bottle
     isosurface {
         function { twisted_superellipsoid(x, y, z, 0.25, 0.25) }
@@ -28,6 +29,7 @@ union {
         material { M_Glass3 }
         translate <0, 0.5, 0>
     }
+
     // Neck
     difference {
         superellipsoid {
@@ -116,7 +118,7 @@ union {
             10 ,      // slice
             35,       // taper
             0.045,    // point chamfer
-            0.1,      // character depth along z-axis
+            0.2,      // character depth along z-axis
             0.00,     // increase per character
             0)        // 1 = "merge"
         material { M_Glass3 }
@@ -127,7 +129,7 @@ union {
         }
         rotate <0, 0, 75>
         scale <0.27, 0.27, 0.27>
-        translate <0.0, 0.1, -0.37>
+        translate <0.0, 0.1, -0.4>
     }
 }
 #end

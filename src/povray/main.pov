@@ -27,14 +27,16 @@ global_settings { assumed_gamma 1.0 }
 #declare BottleRotateY = 20-40*rand(My_seed);
 #declare CapRotateY = 360*rand(My_seed);
 
+/*
 // Uncomment overrides in order to run from within the POV-Ray GUI
 #declare BottleNumber = 3;
 #declare R = 0.9;
 #declare G = 0.4;
 #declare B = 0.2;
-#declare PolishType = 0;
-#declare PercentFull = 90;
+#declare PolishType = 1;
+#declare PercentFull = 20;
 #declare BottleRotateY = 10;
+*/
 
 // Main camera
 camera {
@@ -49,7 +51,6 @@ light_source{
 	  <10, 10, -10>
 	  color White
 }
-
 
 // NOTA BENE: BottleNumber, R, G, B, PolishType, and PercentFull all
 // get passed in from the command line
@@ -76,7 +77,7 @@ object {
             PercentFull)
         #break
     #case (3)
-        TwistedDanieBottle(
+        TwistedDanieBottleCapOn(
             <R, G, B>,
             PolishType,
             CapRotateY,
