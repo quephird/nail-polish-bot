@@ -91,18 +91,23 @@ union {
             contained_by { box { -2, 2 } } // This is to insure no clipping
             scale <0.35, 0.5, 0.35>
         }
-        isosurface {
-        	  function { twisted_superellipsoid(x, y, z, 0.25, 0.25) }
-            contained_by { box { -2, 2 } } // This is to insure no clipping
+        // We use the superellipsoid macro here to make sure that
+        // the intersection face from the difference is rendered too.
+        superellipsoid {
+        	  <0.25, 0.25>
             // Note that the scales here have to be just a tiny bit
             // larger than those above to avoid strange intersection/
             // clipping issues
-            scale <0.36, 0.51, 0.36>
+            scale <0.5, 0.5, 0.5>
             translate <0, percentFull*0.01-0.05, 0>
+            // We rotate this shape as much as the twist angle of the
+            // the primary shape.
+            rotate <0, percentFull*pi/600.0, 0>
         }
         PolishColor(polishColor, polishType)
         translate <0, 0.5, 0>
     }
+
     // Side label placed in rectangular cutout
     object {
         Bevelled_Text (
