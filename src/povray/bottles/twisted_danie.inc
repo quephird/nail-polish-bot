@@ -25,7 +25,7 @@ union {
     // Inside of bottle
     isosurface {
         function { twisted_superellipsoid(x, y, z, 0.25, 0.25) }
-        scale <0.36, 0.51, 0.36>
+        scale <0.35, 0.5, 0.35>
         material { M_Glass3 }
         translate <0, 0.5, 0>
     }
@@ -91,7 +91,7 @@ union {
         isosurface {
         	  function { twisted_superellipsoid(x, y, z, 0.25, 0.25) }
             contained_by { box { -2, 2 } } // This is to insure no clipping
-            scale <0.35, 0.5, 0.35>
+            scale <0.37, 0.52, 0.37>
         }
         // We use the superellipsoid macro here to make sure that
         // the intersection face from the difference is rendered too.
@@ -110,7 +110,7 @@ union {
         translate <0, 0.5, 0>
     }
 
-    // Side label placed in rectangular cutout
+    // Side label
     object {
         Bevelled_Text (
             "texgyreadventor-regular.ttf", // font file
@@ -129,7 +129,7 @@ union {
         }
         rotate <0, 0, 75>
         scale <0.27, 0.27, 0.27>
-        translate <0.0, 0.1, -0.4>
+        translate <0.0, 0.1, -0.48>
     }
 }
 #end
@@ -234,7 +234,6 @@ union{
         translate <0, 1.625, 0>
         rotate <0, capAngleY, 0>
     }
-
     object {
         TwistedDanieBottle (polishColor, polishType, capAngleY, percentFull)
     }
