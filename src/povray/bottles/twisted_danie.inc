@@ -110,7 +110,7 @@ union {
         translate <0, 0.5, 0>
     }
 
-    // Side label placed in rectangular cutout
+    // Side label
     object {
         Bevelled_Text (
             "texgyreadventor-regular.ttf", // font file
@@ -129,7 +129,7 @@ union {
         }
         rotate <0, 0, 75>
         scale <0.27, 0.27, 0.27>
-        translate <0.0, 0.1, -0.4>
+        translate <0.0, 0.1, -0.48>
     }
 }
 #end
