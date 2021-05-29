@@ -23,7 +23,7 @@
     ; +O Specifies the output file name
     ; +W Specifies the image width
     ; +H Specifies the image height
-    (format "-d +A +R3 +L%s +L%s +L%s +I%s +Omain.png +W1280 +H1024 %s"
+    (format "-d +A +R3 +L%s +L%s +L%s +I%s +O/tmp/main.png +W1280 +H1024 %s"
             povray-src-dir
             povray-fonts-dir
             povray-includes-dir
