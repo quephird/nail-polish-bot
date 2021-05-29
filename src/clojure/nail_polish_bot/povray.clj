@@ -39,7 +39,7 @@
         process             (sh/proc povray-bin povray-args)
         exit                (sh/exit-code process)]
     ; Need to make sure exit-code actually waits for proc to complete before returning
-    (println process)
+    (println povray-args)
     (if (not (zero? exit))
       (println "Uh oh, something happened")
       (println "💅 Yay! Image generated successfully 💅"))))
