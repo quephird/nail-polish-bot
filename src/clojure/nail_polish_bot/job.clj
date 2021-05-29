@@ -35,6 +35,7 @@
    image and posting it to both Twitter and Mastdon."
   []
   (let [EVERY-HOUR "0 0 * * * ?"
+        EVERY-FIVE-MINUTES "* /5 * * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)
@@ -45,5 +46,5 @@
                      (triggers/start-now)
                      (triggers/with-schedule
                        (cron/schedule
-                       (cron/cron-schedule EVERY-HOUR))))]
+                       (cron/cron-schedule EVERY-FIVE-MINUTES))))]
     (scheduler/schedule scheduler job trigger)))
