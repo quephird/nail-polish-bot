@@ -37,11 +37,11 @@
         povray-includes-dir (env/env :povray-includes-dir)
         povray-args         (build-povray-args povray-includes-dir povray-file polish-color polish-type percent-full bottle-number)
         process             (sh/proc povray-bin povray-args)
-        _                   (println (sh/stream-to-string process :out))
-        _                   (println (sh/stream-to-string process :err))
-        exit                (sh/exit-code process)]
+        exit                (future (sh/exit-code process))]
     ; Need to make sure exit-code actually waits for proc to complete before returning
     (println povray-args)
-    (if (not (zero? exit))
+    (println (sh/stream-to-string process :out))
+    (println (sh/stream-to-string process :err))
+    (if (not (zero? @exit))
       (println "Uh oh, something happened")
       (println "💅 Yay! Image generated successfully 💅"))))
