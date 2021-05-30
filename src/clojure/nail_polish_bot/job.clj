@@ -25,8 +25,9 @@
         bottle-number (rand-int 4)
         status        (make-status polish-color polish-type percent-full)]
     (povray/render-image polish-color polish-type percent-full bottle-number)
-    (mastodon/post-status-with-media status "/tmp/main.png")
-    ;;(twitter/post-status-with-media status "/tmp/main.png")
+    ;;(mastodon/post-status-with-media status "/tmp/main.png")
+    (let [response (twitter/post-status-with-media status "/tmp/main.png")]
+      (println response))
     ))
 
 (defn start-scheduler
