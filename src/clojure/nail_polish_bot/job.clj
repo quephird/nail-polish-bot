@@ -35,8 +35,7 @@
    and running a Quartz job to generate a new nail polish
    image and posting it to both Twitter and Mastdon."
   []
-  (let [EVERY-HOUR "0 44 * * * ?"
-        EVERY-FIVE-MINUTES "0 0/5 * * * ?"
+  (let [EVERY-HOUR "0 0 * * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)
@@ -47,5 +46,5 @@
                      (triggers/start-now)
                      (triggers/with-schedule
                        (cron/schedule
-                       (cron/cron-schedule EVERY-FIVE-MINUTES))))]
+                       (cron/cron-schedule EVERY-HOUR))))]
     (scheduler/schedule scheduler job trigger)))
