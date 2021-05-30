@@ -25,17 +25,15 @@
         bottle-number (rand-int 4)
         status        (make-status polish-color polish-type percent-full)]
     (povray/render-image polish-color polish-type percent-full bottle-number)
-    ;;(mastodon/post-status-with-media status "/tmp/main.png")
-    (let [response (twitter/post-status-with-media status "/tmp/main.png")]
-      (println response))
-    ))
+    (mastodon/post-status-with-media status "/tmp/main.png")
+    (twitter/post-status-with-media status "/tmp/main.png")))
 
 (defn start-scheduler
   "This is the function that is responsible for starting
    and running a Quartz job to generate a new nail polish
    image and posting it to both Twitter and Mastdon."
   []
-  (let [EVERY-HOUR "0 0 * * * ?"
+  (let [EVERY-TWO-HOURS "0 0 0/2 * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)
@@ -46,5 +44,5 @@
                      (triggers/start-now)
                      (triggers/with-schedule
                        (cron/schedule
-                       (cron/cron-schedule EVERY-HOUR))))]
+                       (cron/cron-schedule EVERY-TWO-HOURS))))]
     (scheduler/schedule scheduler job trigger)))
