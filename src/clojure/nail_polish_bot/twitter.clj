@@ -16,7 +16,8 @@
         new-status (req/status-body-part status)
         body       [new-file new-status]
         api-params {:oauth-creds bot-creds
-                    :body        body}
-        response   (apply api/statuses-update-with-media api-params)]
+                    :body        body}]
     ; TODO: Need to check env-vars to see that it actually has something
-    (println response)))
+    (try
+      (apply api/statuses-update-with-media api-params)
+      (catch Exception e (println (.getMessage e))))))
