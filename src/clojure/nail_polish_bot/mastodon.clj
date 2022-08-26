@@ -51,7 +51,10 @@
   "`POST`s a new status with both the message in the body of the
    toot and the images attached to it."
   [status filename]
-  (let [media-ids [(->> filename
-                        post-media
-                        get-id-from-attachment)]]
-    (post-status status :media-ids media-ids)))
+  (try
+    (println "Posting to Mastodon...")
+    (let [media-ids [(->> filename
+                          post-media
+                          get-id-from-attachment)]]
+      (post-status status :media-ids media-ids))
+    (catch Exception e (println "Could not post to Mastodon: " (.getMessage e)))))

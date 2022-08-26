@@ -1,5 +1,5 @@
 (ns nail-polish-bot.povray
-  (:require [me.raynes.conch.low-level :as sh]
+  (:require [clojure.java.shell :as shell]
             [environ.core :as env]))
 
 (defn build-povray-args [povray-includes-dir
@@ -30,18 +30,16 @@
             povray-file
             user-args)))
 
-; TODO: Need logging
 (defn render-image [polish-color polish-type percent-full bottle-number]
   (let [povray-bin          "povray"
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
         povray-args         (build-povray-args povray-includes-dir povray-file polish-color polish-type percent-full bottle-number)
-        process             (sh/proc povray-bin povray-args)
-        exit                (future (sh/exit-code process))]
-    ; Need to make sure exit-code actually waits for proc to complete before returning
-    (println povray-args)
-    (println (sh/stream-to-string process :out))
-    (println (sh/stream-to-string process :err))
-    (if (not (zero? @exit))
-      (println "Uh oh, something happened")
+        _                   (println "Rendering image...")
+        result              (shell/sh povray-bin povray-args)
+        exit                (:exit result)]
+    (if (not (zero? exit))
+      (do
+        (println "Uh oh, something happened")
+        (println (:err result)))
       (println "💅 Yay! Image generated successfully 💅"))))
