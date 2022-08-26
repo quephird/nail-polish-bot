@@ -5,7 +5,8 @@
             [clojurewerkz.quartzite.jobs :as jobs :refer [defjob]]
             [clojurewerkz.quartzite.scheduler :as scheduler]
             [clojurewerkz.quartzite.schedule.cron :as cron]
-            [clojurewerkz.quartzite.triggers :as triggers]))
+            [clojurewerkz.quartzite.triggers :as triggers]
+            [clojure.tools.logging :as log]))
 
 (defn make-status
   "Produces a status from the three parameters of the
@@ -23,18 +24,18 @@
         percent-full  (+ 15 (rand 80))
         bottle-number (rand-int 4)
         status        (make-status polish-color polish-type percent-full)]
-    (println "Running job...")
+    (log/info "Running job...")
     (povray/render-image polish-color polish-type percent-full bottle-number)
     (mastodon/post-status-with-media status "/tmp/main.png")
     (twitter/post-status-with-media status "/tmp/main.png")
-    (println "Job completed!")))
+    (log/info "Job completed!")))
 
 (defn start-scheduler
   "This is the function that is responsible for starting
    and running a Quartz job to generate a new nail polish
-   image and posting it to both Twitter and Mastdon."
+   image and posting it to both Twitter and Mastodon."
   []
-  (let [EVERY-TWO-HOURS "0 0 0/2 * * ?"
+  (let [EVERY-TWO-HOURS "0 19 * * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)

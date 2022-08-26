@@ -1,6 +1,7 @@
 (ns nail-polish-bot.mastodon
   (:require [cheshire.core :as json]
             [clj-http.client :as http]
+            [clojure.tools.logging :as log]
             [environ.core :as env]))
 
 (defn post-to-endpoint
@@ -52,9 +53,10 @@
    toot and the images attached to it."
   [status filename]
   (try
-    (println "Posting to Mastodon...")
+    (log/info "Posting to Mastodon...")
     (let [media-ids [(->> filename
                           post-media
                           get-id-from-attachment)]]
       (post-status status :media-ids media-ids))
-    (catch Exception e (println "Could not post to Mastodon: " (.getMessage e)))))
+    (catch Exception e
+      (log/error e "Could not post to Mastodon: "))))

@@ -1,5 +1,6 @@
 (ns nail-polish-bot.twitter
-  (:require [environ.core :as env]
+  (:require [clojure.tools.logging :as log]
+            [environ.core :as env]
             [twitter.api.restful :as api]
             [twitter.oauth :as oauth]
             [twitter.request :as req]))
@@ -15,7 +16,8 @@
           new-file   (req/file-body-part filename)
           new-status (req/status-body-part status)
           body       [new-file new-status]]
-      (println "Posting to Twitter...")
+      (log/info "Posting to Twitter...")
       (api/statuses-update-with-media :oauth-creds bot-creds
                                       :body        body))
-    (catch Exception e (println "Could not post to Twitter: " (.getMessage e)))))
+    (catch Exception e
+      (log/error e "Could not post to Twitter: "))))

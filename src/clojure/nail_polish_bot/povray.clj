@@ -1,5 +1,6 @@
 (ns nail-polish-bot.povray
   (:require [clojure.java.shell :as shell]
+            [clojure.tools.logging :as log]
             [environ.core :as env]))
 
 (defn build-povray-args [povray-includes-dir
@@ -35,11 +36,11 @@
         povray-file         "main.pov"
         povray-includes-dir (env/env :povray-includes-dir)
         povray-args         (build-povray-args povray-includes-dir povray-file polish-color polish-type percent-full bottle-number)
-        _                   (println "Rendering image...")
+        _                   (log/info "Rendering image...")
         result              (shell/sh povray-bin povray-args)
         exit                (:exit result)]
     (if (not (zero? exit))
       (do
-        (println "Uh oh, something happened")
-        (println (:err result)))
-      (println "💅 Yay! Image generated successfully 💅"))))
+        (log/error "Uh oh, something happened")
+        (log/error (:err result)))
+      (log/info "💅 Yay! Image generated successfully 💅"))))
