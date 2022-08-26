@@ -5,7 +5,8 @@
             [clojurewerkz.quartzite.jobs :as jobs :refer [defjob]]
             [clojurewerkz.quartzite.scheduler :as scheduler]
             [clojurewerkz.quartzite.schedule.cron :as cron]
-            [clojurewerkz.quartzite.triggers :as triggers]))
+            [clojurewerkz.quartzite.triggers :as triggers]
+            [clojure.tools.logging :as log]))
 
 (defn make-status
   "Produces a status from the three parameters of the
@@ -17,21 +18,22 @@
 
 ; TODO: Need to generate file name and pass it into render-image and post-status
 ; TODO: Need to pass params as a single hashmap instead of individual one
-; TODO: Need logging
 (defjob PostNewImageJob [ctx]
   (let [polish-color  (vec (take 3 (repeatedly #(rand))))
         polish-type   (rand-int 2)
         percent-full  (+ 15 (rand 80))
         bottle-number (rand-int 4)
         status        (make-status polish-color polish-type percent-full)]
+    (log/info "Running job...")
     (povray/render-image polish-color polish-type percent-full bottle-number)
     (mastodon/post-status-with-media status "/tmp/main.png")
-    (twitter/post-status-with-media status "/tmp/main.png")))
+    (twitter/post-status-with-media status "/tmp/main.png")
+    (log/info "Job completed!")))
 
 (defn start-scheduler
   "This is the function that is responsible for starting
    and running a Quartz job to generate a new nail polish
-   image and posting it to both Twitter and Mastdon."
+   image and posting it to both Twitter and Mastodon."
   []
   (let [EVERY-TWO-HOURS "0 0 0/2 * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)

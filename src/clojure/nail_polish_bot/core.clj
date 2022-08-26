@@ -1,6 +1,7 @@
 (ns nail-polish-bot.core
-  (:require [nail-polish-bot.job :as job]))
+  (:require [nail-polish-bot.job :as job]
+            [clojure.tools.logging :as log]))
 
-; TODO: Need logging
 (defn -main [& args]
+  (log/info "Starting app...")
   (job/start-scheduler))
