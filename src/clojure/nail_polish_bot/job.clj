@@ -35,7 +35,7 @@
    and running a Quartz job to generate a new nail polish
    image and posting it to both Twitter and Mastodon."
   []
-  (let [EVERY-TWO-HOURS "0 19 * * * ?"
+  (let [EVERY-TWO-HOURS "0 0 0/2 * * ?"
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)
