@@ -281,6 +281,103 @@ povray Declare=Foo=42.0 ...
 
 For additional user parameters, you just need to append a similar command line argument for each one.
 
+## Update for 20220826
+
+#### Moving from Heroku to Railway
+
+Per a post on Twitter on 8/25/2022, Heroku announced that they will no longer offer free-tier plans for any applications hosted on their platform. [⁶](#heroku-cancelling-free-plans) That suddenly incentivized me to find another platform to host this lovely bot... but I needed to find one that easily supported:
+
+* Clojure
+* reasonable secrets management
+* installation of external dependencies, namely POV-Ray
+
+And I discovered that Railway supports all of them.
+
+Regarding the first challenge, I needed to figure out what needed to be done to get Railway to run Clojure code. Unlike Heroku, Railway does not have the concept of a buildpack for a programming language/stack, and instead it uses Nixpacks. Conveniently, Nixpacks can inspect the contents of a project directory and generate an environment accordingly for a fairly large set of programming languages. And it so happens that Nixpacks supports Clojure-based projects; it simply looks for `project.clj` and even looks for how the application is invoked, in this case `lein run`. No `Procfile` nor any other configuration file was/is needed.
+
+In Heroku, all of the application's secrets are stored in environment variables managed in the Heroku console. Similarly, Railway exposes a "Variable" page for a given application to set them all up. I didn't need to change naming conventions nor any code to accomplish the same thing; I just copied and pasted them all from the former to the latter.
+
+Somewhat similarly to how Heroku manages external dependencies via buildpacks, Nixpacks manages them via the `NIXPACKS_PKGS` or `NIXPACKS_APT_PKGS` environment variables in Nixpacks, which can hold a list of names of packages that Nixpacks will install into the environment. I found a package for POV-Ray using the search engine [here](https://search.nixos.org/packages), and added set the `NIXPACKS_PKGS` environment variable to simply `povray` in the Railway console. There was/is no need for an external configuration file, `Aptfile`.
+
+#### Replaced shell library
+
+For some reason, I could not figure out how to properly shell out and invoke POV-Ray from within Clojure in the new environement; the process kept hanging. So, I switched to `clojure.java.shell`, from the Conch library, and that worked like a charm.
+
+#### Logging
+
+I am ashamed to say that I originally only had a couple of `println` statements sprinkled around the codebase; that has been changed. I introduced `org.clojure/tools.logging` as another dependency so that I could better troubleshoot any problems with my bot. All I needed to do was add a `log4j.properties` file with basic configuration, and a logging provider, `com.fzakaria/slf4j-timbre`, and then I could begin to add calls to `(log/info)` and `(log/error)` wherever I wanted to in the application. Now I can actually see timestamps in the Railway logs. 
+
+#### Testing and deployment 
+
+Before I successfully deployed anything to Railway, I needed to make sure that I could run my bot in a local image on my MacBae Air, especially in the beginning because I was having trouble even getting the application to start. Thankfully, there is a `nixpacks` command line tool which allowed me to do that. Specifically, I ran:
+
+```
+nixpacks build . -- name npb --pkgs povray --env 'MASTODON_INSTANCE=botsin.space' 'MASTODON_ACCESS_KEY=████████████' ...
+```
+... to build a local Docker image with POV-Ray installed and all the necessary secrets made available. 
+
+I found myself frequently running:
+
+```
+nixpacks plan . --pkgs povray --env 'MASTODON_INSTANCE=botsin.space' 'MASTODON_ACCESS_KEY=████████████'
+```
+
+... to gain more visibility into how the image was going to be generated. Running that command yielded the following output:
+
+```
+{
+  "nixpacksVersion": "0.3.8",
+  "buildImage": "ghcr.io/railwayapp/nixpacks:debian-1660071566",
+  "variables": {
+    "MASTODON_INSTANCE": "botsin.space",
+    "MASTODON_ACCESS_KEY": "████████████"
+  },
+  "phases": [
+    {
+      "name": "install",
+      "dependsOn": [
+        "setup"
+      ]
+    },
+    {
+      "name": "setup",
+      "nixPackages": [
+        {
+          "name": "povray"
+        },
+        {
+          "name": "leiningen"
+        },
+        {
+          "name": "jdk"
+        }
+      ]
+    },
+    {
+      "name": "build",
+      "dependsOn": [
+        "install"
+      ],
+      "commands": [
+        "lein uberjar; if [ -f /app/target/uberjar/*standalone.jar ]; then  mv /app/target/uberjar/*standalone.jar /app/target/*standalone.jar; fi"
+      ]
+    }
+  ],
+  "startPhase": {
+    "cmd": "lein run"
+  }
+}
+```
+
+As you can see, the environment variables appear in one stanza, and the external dependencies, namely POV-Ray, Java, and Leiningen, are nominated in another one. I then ran the following:
+
+```
+docker run -it npb
+```
+... to spin up the image and run the bot locally. Being able to do that made it much easier to troubleshoot all the problems that I encountered along the way, versus just deploying to production and observing it like a black box.
+
+Once I was ready to deploy to Railway, I needed to install the `railway` command line utility. First I ran `railway login` to connect to my new account; that would authenticate via a browser. Then I ran `railway up` to generate the image from the current local branch of code, combined with all the environment settings configured in the Railway console, and then to deploy the image into production. It was all incredibly easy.
+
 ## Epilogue
 
 I may include other things that I learn along the way as this project evolves.
@@ -302,9 +399,6 @@ POV-Ray 3.7 documentation
 POV-Ray man page  
 [https://www.mankier.com/1/povray](https://www.mankier.com/1/povray)
 
-conch  
-[https://github.com/Raynes/conch](https://github.com/Raynes/conch)
-
 environ  
 [https://github.com/weavejester/environ](https://github.com/weavejester/environ)
 
@@ -314,6 +408,18 @@ twitter-api
 quartzite  
 [https://github.com/michaelklishin/quartzite](https://github.com/michaelklishin/quartzite)
 
+Railway  
+[https://railway.app]()
+
+Nixpacks  
+[https://nixpacks.com/docs/]()
+
+org.clojure/tools.logging API  
+[https://clojure.github.io/tools.logging/]()
+
+Clojure tools logging example code and configuration
+[https://cljdoc.org/d/org.clojure/tools.logging/0.4.1/doc/readme]()
+
 ## Footnotes
 
 <a name="env-vars">¹</a> This nice article discusses how: [https://devcenter.heroku.com/articles/config-vars](https://devcenter.heroku.com/articles/config-vars)  
@@ -321,6 +427,7 @@ quartzite
 <a name="dyno-config">³</a> Bless the person who posted this article, [https://stackoverflow.com/a/39533774](https://stackoverflow.com/a/39533774).  
 <a name="user-parameters">⁴</a>  [http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1](http://www.povray.org/documentation/3.7.0/r3_2.html#r3_2_5_1)  
 <a name="floats">⁵</a>  [http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E](http://news.povray.org/povray.windows/message/%3C49987138%40news.povray.org%3E)  
+<a name="heroku-cancelling-free-plans">⁶</a>  [https://twitter.com/heroku/status/1562817050565054469?s=20&t=LHLAsWIUBTCzNLEzg9YB0Q]()
 
 
 ## License
