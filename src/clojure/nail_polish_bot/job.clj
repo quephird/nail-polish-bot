@@ -35,7 +35,7 @@
    and running a Quartz job to generate a new nail polish
    image and posting it to both Twitter and Mastodon."
   []
-  (let [EVERY-TWO-HOURS "0 0 0/2 * * ?"
+  (let [cron-job-profile (env/env :cron-job-profile)
         scheduler  (-> (scheduler/initialize) scheduler/start)
         job        (jobs/build
                      (jobs/of-type PostNewImageJob)
@@ -46,5 +46,5 @@
                      (triggers/start-now)
                      (triggers/with-schedule
                        (cron/schedule
-                       (cron/cron-schedule EVERY-TWO-HOURS))))]
+                       (cron/cron-schedule cron-job-profile))))]
     (scheduler/schedule scheduler job trigger)))
