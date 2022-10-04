@@ -6,7 +6,8 @@
             [clojurewerkz.quartzite.scheduler :as scheduler]
             [clojurewerkz.quartzite.schedule.cron :as cron]
             [clojurewerkz.quartzite.triggers :as triggers]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [environ.core :as env]))
 
 (defn make-status
   "Produces a status from the three parameters of the
