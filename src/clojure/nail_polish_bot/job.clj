@@ -28,7 +28,6 @@
     (log/info "Running job...")
     (povray/render-image polish-color polish-type percent-full bottle-number)
     (mastodon/post-status-with-media status "/tmp/main.png")
-    (twitter/post-status-with-media status "/tmp/main.png")
     (log/info "Job completed!")))
 
 (defn start-scheduler
